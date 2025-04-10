@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyd
+*.pyo
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Docker
+docker-compose.override.yml
+
+# Ambiente
+.env
+.env.local
+.env.*
+secrets.py
+
+# Banco de dados/Sistema
+*.db
+*.sqlite
+database.json
+/db/
+/migrations/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.temp
