@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Barbeiros - Barbearia Master</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/static/barbeiros.css" />
+</head>
+<body>
+  <!-- Cabeçalho escuro padrão -->
+  <div class="navbar">
+    <h1>Painel de Barbeiros</h1>
+    <a href="/index.html" class="btn">
+      <i class="bi bi-house me-1"></i> Início
+    </a>
+  </div>
+
+  <main class="container my-5">
+    <h2 class="text-center mb-4">Lista de Barbeiros</h2>
+
+    <div class="center-controls d-flex gap-2 align-items-center justify-content-between flex-wrap mb-3">
+        <a href="/admin/cadastro-barbeiro.html" class="btn btn-dark d-flex align-items-center text-warning">
+          <i class="bi bi-plus-lg me-1"></i> Adicionar Barbeiro
+        </a>
+        <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Buscar por nome...">
+    </div>
+      
+
+    <div class="alert alert-warning no-barbers">Nenhum barbeiro encontrado.</div>
+    <div class="row" id="barbersContainer"></div>
+
+    <div class="modal fade" id="editBarberModal" tabindex="-1" aria-labelledby="editBarberModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="editBarberForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editBarberModalLabel">Editar Barbeiro</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="editBarberId">
+              <div class="mb-3">
+                <label for="editNome" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="editNome" required>
+              </div>
+              <div class="mb-3">
+                <label for="editTelefone" class="form-label">Telefone</label>
+                <input type="text" class="form-control" id="editTelefone" required>
+              </div>
+              <div class="mb-3">
+                <label for="editEspecialidade" class="form-label">Especialidade</label>
+                <input type="text" class="form-control" id="editEspecialidade">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Horários</label>
+                <div id="editHorariosContainer"></div>
+                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="adicionarHorarioEdit()">+ Adicionar Horário</button>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script>
+    const barbersContainer = document.getElementById("barbersContainer");
+    const searchInput = document.getElementById("searchInput");
+    const noBarbersAlert = document.querySelector(".no-barbers");
+    let barbersData = [];
+
+    function renderBarbers() {
+      const filtered = applyFilters(barbersData);
+      barbersContainer.innerHTML = "";
+      noBarbersAlert.style.display = filtered.length === 0 ? "block" : "none";
+
+      filtered.forEach(barber => {
+        const col = document.createElement("div");
+        col.className = "col-md-6 col-xl-4 mb-4";
+
+        const horariosHTML = (barber.horarios || []).map(h => `
+          <li>${h.dia_semana}: ${h.horario_inicio.slice(0, 5)} - ${h.horario_fim.slice(0, 5)}</li>
+        `).join("");
+
+        col.innerHTML = `
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">${barber.nome}</h5>
+              <p class="card-text">
+                <strong>Telefone:</strong> ${barber.telefone}<br>
+                <strong>Especialidade:</strong> ${barber.especialidade || 'N/A'}<br>
+                <strong>Horários:</strong>
+                <ul>${horariosHTML || "<li>Sem horários cadastrados</li>"}</ul>
+              </p>
+              <div class="mt-auto d-flex justify-content-between">
+                <button class="btn btn-sm btn-outline-primary" onclick="editarBarbeiro(${barber.id})">Editar</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="removerBarbeiro(${barber.id})">Remover</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        barbersContainer.appendChild(col);
+      });
+    }
+
+    function applyFilters(data) {
+      const search = searchInput.value.toLowerCase();
+      return data.filter(barber => barber.nome.toLowerCase().includes(search));
+    }
+
+    function criarCampoHorarioEdit(horario = {}) {
+      const div = document.createElement("div");
+      div.className = "d-flex gap-2 align-items-end mb-2 horario-item";
+
+      div.innerHTML = `
+        <select class="form-select form-select-sm dia-semana" required>
+          <option value="">Dia</option>
+          <option value="Segunda">Segunda</option>
+          <option value="Terça">Terça</option>
+          <option value="Quarta">Quarta</option>
+          <option value="Quinta">Quinta</option>
+          <option value="Sexta">Sexta</option>
+          <option value="Sábado">Sábado</option>
+          <option value="Domingo">Domingo</option>
+        </select>
+        <input type="time" class="form-control form-control-sm horario-inicio" required />
+        <input type="time" class="form-control form-control-sm horario-fim" required />
+        <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">
+          <i class="bi bi-x"></i>
+        </button>
+      `;
+
+      if (horario.dia_semana) div.querySelector(".dia-semana").value = horario.dia_semana;
+      if (horario.horario_inicio) div.querySelector(".horario-inicio").value = horario.horario_inicio.slice(0, 5);
+      if (horario.horario_fim) div.querySelector(".horario-fim").value = horario.horario_fim.slice(0, 5);
+
+      return div;
+    }
+
+    function adicionarHorarioEdit(horario = {}) {
+      const container = document.getElementById("editHorariosContainer");
+      container.appendChild(criarCampoHorarioEdit(horario));
+    }
+
+    function editarBarbeiro(id) {
+      const barber = barbersData.find(b => b.id == id);
+      if (!barber) return;
+
+      document.getElementById("editBarberId").value = barber.id;
+      document.getElementById("editNome").value = barber.nome;
+      document.getElementById("editTelefone").value = barber.telefone;
+      document.getElementById("editEspecialidade").value = barber.especialidade || "";
+
+      const horariosContainer = document.getElementById("editHorariosContainer");
+      horariosContainer.innerHTML = "";
+      (barber.horarios || []).forEach(h => adicionarHorarioEdit(h));
+
+      const modal = new bootstrap.Modal(document.getElementById("editBarberModal"));
+      modal.show();
+    }
+
+    document.getElementById("editBarberForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const id = document.getElementById("editBarberId").value;
+      const nome = document.getElementById("editNome").value;
+      const telefone = document.getElementById("editTelefone").value;
+      const especialidade = document.getElementById("editEspecialidade").value;
+
+      const horarios = Array.from(document.querySelectorAll("#editHorariosContainer .horario-item")).map(div => ({
+        dia_semana: div.querySelector(".dia-semana").value,
+        horario_inicio: div.querySelector(".horario-inicio").value,
+        horario_fim: div.querySelector(".horario-fim").value,
+      }));
+
+      fetch(`/api/barbeiros/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, telefone, especialidade, horarios })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Erro ao atualizar");
+        return res.json();
+      })
+      .then(updated => {
+        const index = barbersData.findIndex(b => b.id == id);
+        if (index !== -1) {
+          barbersData[index] = updated;
+          renderBarbers();
+        }
+        bootstrap.Modal.getInstance(document.getElementById("editBarberModal")).hide();
+      })
+      .catch(err => {
+        alert("Erro ao salvar alterações.");
+        console.error(err);
+      });
+    });
+
+    function removerBarbeiro(id) {
+      if (confirm("Tem certeza que deseja remover este barbeiro?")) {
+        fetch(`/api/barbeiros/${id}`, { method: "DELETE" })
+          .then(response => {
+            if (response.ok) {
+              barbersData = barbersData.filter(barber => barber.id !== parseInt(id));
+              renderBarbers();
+            } else {
+              alert("Erro ao remover o barbeiro.");
+            }
+          });
+      }
+    }
+
+    searchInput.addEventListener("input", renderBarbers);
+
+    async function carregarBarbeiros() {
+      try {
+        const resposta = await fetch("http://127.0.0.1:8000/api/barbeiros");
+        if (!resposta.ok) throw new Error("Erro ao carregar barbeiros");
+
+        barbersData = await resposta.json();
+        renderBarbers();
+      } catch (erro) {
+        console.error(erro);
+        alert("Falha ao carregar barbeiros");
+      }
+    }
+
+    carregarBarbeiros();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

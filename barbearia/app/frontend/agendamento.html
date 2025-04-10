@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento - Barbearia Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/agendamento.css">
+</head>
+<body>
+    <!-- Skip link para acessibilidade -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header bg-white border-0 pt-4">
+                        <h1 class="h3 text-center" id="main-content" tabindex="-1">Agendamento de Horário</h1>
+                        <p class="text-center text-muted mb-0">Preencha os dados abaixo para agendar seu horário</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="agendamentoForm" aria-labelledby="main-content">
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label for="nomeCliente" class="form-label">Nome Completo <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="nomeCliente" name="nomeCliente" required aria-required="true">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="telefoneCliente" class="form-label">Telefone <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control" id="telefoneCliente" name="telefoneCliente" required aria-required="true" placeholder="(00) 00000-0000">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label for="dataAgendamento" class="form-label">Data do Agendamento <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="dataAgendamento" name="dataAgendamento" required aria-required="true" placeholder="Selecione a data">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="barbeiro" class="form-label">Barbeiro <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="barbeiro" name="barbeiro" required aria-required="true">
+                                        <option value="" selected disabled>Selecione um barbeiro</option>
+                                        <option value="joao">João Silva</option>
+                                        <option value="marcos">Marcos Oliveira</option>
+                                        <option value="pedro">Pedro Santos</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Serviços <span class="text-danger">*</span></label>
+                                <div class="row row-cols-1 row-cols-md-3 g-4">
+                                    <div class="col">
+                                        <div class="card h-100 service-card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="corte" id="corte" name="servicos">
+                                                    <label class="form-check-label fw-bold" for="corte">
+                                                        Corte de Cabelo
+                                                    </label>
+                                                </div>
+                                                <p class="card-text mt-2">Corte profissional com técnicas modernas.</p>
+                                                <p class="fw-bold">R$ 50,00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card h-100 service-card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="barba" id="barba" name="servicos">
+                                                    <label class="form-check-label fw-bold" for="barba">
+                                                        Barba Completa
+                                                    </label>
+                                                </div>
+                                                <p class="card-text mt-2">Aparo, desenho e tratamento para barba.</p>
+                                                <p class="fw-bold">R$ 40,00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card h-100 service-card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="completo" id="completo" name="servicos">
+                                                    <label class="form-check-label fw-bold" for="completo">
+                                                        Pacote Completo
+                                                    </label>
+                                                </div>
+                                                <p class="card-text mt-2">Corte + barba + hidratação.</p>
+                                                <p class="fw-bold">R$ 80,00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Horários Disponíveis <span class="text-danger">*</span></label>
+                                <div class="alert alert-info">
+                                    Selecione um barbeiro e uma data para ver os horários disponíveis.
+                                </div>
+                                <div id="horariosContainer" class="d-none">
+                                    <div class="d-flex flex-wrap" id="horariosList">
+                                        <!-- Horários serão gerados dinamicamente aqui -->
+                                    </div>
+                                    <input type="hidden" id="horarioSelecionado" name="horarioSelecionado" required aria-required="true">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="observacoes" class="form-label">Observações</label>
+                                <textarea class="form-control" id="observacoes" name="observacoes" rows="3" placeholder="Alguma observação sobre o serviço?"></textarea>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Confirmar Agendamento</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmacaoModal" tabindex="-1" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="confirmacaoModalLabel">Agendamento Confirmado</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Seu agendamento foi confirmado com sucesso!</p>
+                    <div class="alert alert-success">
+                        <strong>Detalhes do Agendamento:</strong>
+                        <div id="detalhesAgendamento"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <script>
+        // Configuração do datepicker
+        flatpickr("#dataAgendamento", {
+            locale: "pt",
+            minDate: "today",
+            maxDate: new Date().fp_incr(30), // 30 dias a partir de hoje
+            disable: [
+                function(date) {
+                    // Desabilita domingos
+                    return (date.getDay() === 0);
+                }
+            ]
+        });
+
+        // Máscara para telefone
+        document.getElementById('telefoneCliente').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) value = '(' + value;
+            if (value.length > 3) value = value.substring(0, 3) + ') ' + value.substring(3);
+            if (value.length > 10) value = value.substring(0, 10) + '-' + value.substring(10);
+            if (value.length > 15) value = value.substring(0, 15);
+            e.target.value = value;
+        });
+
+        // Gerar horários disponíveis
+        function gerarHorariosDisponiveis() {
+            const container = document.getElementById('horariosContainer');
+            const lista = document.getElementById('horariosList');
+            
+            // Limpa horários anteriores
+            lista.innerHTML = '';
+            
+            // Simulação de horários disponíveis (na prática, viria do backend)
+            const horariosDisponiveis = [
+                '08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'
+            ];
+            
+            // Horários ocupados (simulação)
+            const horariosOcupados = ['10:00', '14:00'];
+            
+            horariosDisponiveis.forEach(horario => {
+                const isOcupado = horariosOcupados.includes(horario);
+                const timeSlot = document.createElement('div');
+                timeSlot.className = `time-slot ${isOcupado ? 'unavailable' : ''}`;
+                timeSlot.textContent = horario;
+                timeSlot.dataset.horario = horario;
+                
+                if (!isOcupado) {
+                    timeSlot.addEventListener('click', function() {
+                        // Remove seleção anterior
+                        document.querySelectorAll('.time-slot.selected').forEach(el => {
+                            el.classList.remove('selected');
+                        });
+                        
+                        // Adiciona seleção ao horário clicado
+                        this.classList.add('selected');
+                        document.getElementById('horarioSelecionado').value = this.dataset.horario;
+                    });
+                }
+                
+                lista.appendChild(timeSlot);
+            });
+            
+            container.classList.remove('d-none');
+        }
+        
+        // Quando data ou barbeiro mudam, gera novos horários
+        document.getElementById('dataAgendamento').addEventListener('change', gerarHorariosDisponiveis);
+        document.getElementById('barbeiro').addEventListener('change', gerarHorariosDisponiveis);
+        
+        // Validação de formulário
+        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Verifica se pelo menos um serviço foi selecionado
+            const servicosSelecionados = document.querySelectorAll('input[name="servicos"]:checked');
+            if (servicosSelecionados.length === 0) {
+                alert('Selecione pelo menos um serviço!');
+                return;
+            }
+            
+            // Verifica se um horário foi selecionado
+            if (!document.getElementById('horarioSelecionado').value) {
+                alert('Selecione um horário disponível!');
+                return;
+            }
+            
+            // Monta resumo do agendamento
+            const resumo = `
+                <p><strong>Nome:</strong> ${document.getElementById('nomeCliente').value}</p>
+                <p><strong>Data:</strong> ${document.getElementById('dataAgendamento').value}</p>
+                <p><strong>Horário:</strong> ${document.getElementById('horarioSelecionado').value}</p>
+                <p><strong>Barbeiro:</strong> ${document.getElementById('barbeiro').options[document.getElementById('barbeiro').selectedIndex].text}</p>
+                <p><strong>Serviços:</strong> ${Array.from(servicosSelecionados).map(el => el.nextElementSibling.textContent.trim()).join(', ')}</p>
+            `;
+            
+            document.getElementById('detalhesAgendamento').innerHTML = resumo;
+            
+            // Mostra modal de confirmação
+            const modal = new bootstrap.Modal(document.getElementById('confirmacaoModal'));
+            modal.show();
+            
+            // Aqui você pode adicionar o código para enviar os dados para o servidor
+            // this.reset();
+        });
+    </script>
+</body>
+</html>

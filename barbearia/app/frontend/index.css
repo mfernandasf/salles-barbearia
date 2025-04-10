@@ -1,0 +1,97 @@
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #f39c12;
+  --light-color: #ecf0f1;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-color);
+  color: var(--primary-color);
+}
+
+.navbar {
+  background-color: var(--primary-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+  background-color: #e67e22;
+  border-color: #e67e22;
+}
+
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 5rem 0;
+  margin-bottom: 2rem;
+}
+
+.service-card {
+  transition: transform 0.3s;
+  margin-bottom: 1.5rem;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+}
+
+.footer {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+
+.skip-link {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+}
+
+[aria-hidden="true"] {
+  display: none;
+}
+
+.product-card {
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.product-img {
+  height: 200px;
+  object-fit: contain;
+  padding: 15px;
+  background-color: #f8f9fa;
+}
+
+.price-tag {
+  font-weight: bold;
+  color: #f39c12;
+  font-size: 1.2rem;
+}
+
+.add-to-cart {
+  width: 100%;
+}

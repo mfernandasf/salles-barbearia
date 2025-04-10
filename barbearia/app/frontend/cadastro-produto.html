@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produtos - Barbearia Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./cadastrop.css">
+</head>
+<body>
+    <!-- Skip link para acessibilidade -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-dark">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="cadastro-produto.html">
+                                Cadastro de Produtos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="cadastro-cliente.html">
+                                Cadastro de Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="agendamentos.html">
+                                Agendamentos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="relatorios.html">
+                                Relatórios
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2" id="main-content" tabindex="-1">Cadastro de Produtos</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                            <span data-feather="calendar"></span>
+                            Hoje
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h2 class="h5 mb-0">Informações do Produto</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="produtoForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="nomeProduto" class="form-label">Nome do Produto <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="nomeProduto" name="nomeProduto" required aria-required="true">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="categoria" class="form-label">Categoria <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="categoria" name="categoria" required aria-required="true">
+                                        <option value="" selected disabled>Selecione uma categoria</option>
+                                        <option value="shampoo">Shampoo</option>
+                                        <option value="condicionador">Condicionador</option>
+                                        <option value="pomada">Pomada</option>
+                                        <option value="gel">Gel</option>
+                                        <option value="outros">Outros</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="preco" class="form-label">Preço (R$) <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="preco" name="preco" step="0.01" min="0" required aria-required="true">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="estoque" class="form-label">Quantidade em Estoque <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="estoque" name="estoque" min="0" required aria-required="true">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição do Produto</label>
+                                <textarea class="form-control" id="descricao" name="descricao" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="imagem" class="form-label">Imagem do Produto</label>
+                                <input class="form-control" type="file" id="imagem" name="imagem" accept="image/*">
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-secondary me-md-2">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar Produto</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h2 class="h5 mb-0">Lista de Produtos Cadastrados</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" aria-label="Lista de produtos cadastrados">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Categoria</th>
+                                        <th scope="col">Preço</th>
+                                        <th scope="col">Estoque</th>
+                                        <th scope="col">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Shampoo Anticaspa</td>
+                                        <td>Shampoo</td>
+                                        <td>R$ 45,90</td>
+                                        <td>12</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1">Editar</button>
+                                            <button class="btn btn-sm btn-outline-danger">Excluir</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Pomada Modeladora</td>
+                                        <td>Pomada</td>
+                                        <td>R$ 32,50</td>
+                                        <td>8</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1">Editar</button>
+                                            <button class="btn btn-sm btn-outline-danger">Excluir</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Gel Forte Fixação</td>
+                                        <td>Gel</td>
+                                        <td>R$ 28,00</td>
+                                        <td>15</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1">Editar</button>
+                                            <button class="btn btn-sm btn-outline-danger">Excluir</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validação de formulário
+        document.getElementById('produtoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Aqui você pode adicionar o código para enviar os dados para o servidor
+            alert('Produto cadastrado com sucesso!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

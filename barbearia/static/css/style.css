@@ -1,0 +1,16 @@
+body {
+  padding-top: 56px;
+}
+
+.card {
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.table-actions {
+  white-space: nowrap;
+  width: 1%;
+}

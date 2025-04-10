@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Agendamentos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Agendamentos</h1>
+    <a href="/agendamentos/novo" class="btn btn-success">
+        <i class="bi bi-plus-lg"></i> Novo Agendamento
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Data/Hora</th>
+                <th>Serviço</th>
+                <th>Cliente</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in agendamentos %}
+            <tr>
+                <td>{{ agendamento.id }}</td>
+                <td>{{ agendamento.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ agendamento.servico }}</td>
+                <td>{{ agendamento.cliente.nome }}</td>
+                <td>
+                    <a href="/agendamentos/editar/{{ agendamento.id }}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <button class="btn btn-sm btn-danger" onclick="confirmarExclusao('{{ agendamento.id }}', '{{ agendamento.servico }}')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal de Confirmação (similar ao de clientes) -->
+<script>
+function confirmarExclusao(id, servico) {
+    document.getElementById('clienteNome').textContent = servico;
+    document.getElementById('btnExcluir').href = `/agendamentos/excluir/${id}`;
+    new bootstrap.Modal(document.getElementById('confirmModal')).show();
+}
+</script>
+{% endblock %}
